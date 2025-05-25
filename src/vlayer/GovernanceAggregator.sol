@@ -21,11 +21,7 @@ contract GovernanceAggregator {
         verifier = _verifier;
     }
 
-    function addVotes(
-        uint256 proposalId,
-        uint256 yesVotes,
-        uint256 noVotes
-    ) external onlyVerifier {
+    function addVotes(uint256 proposalId, uint256 yesVotes, uint256 noVotes) external onlyVerifier {
         require(!proposals[proposalId].aggregated[proposalId], "Votes already aggregated for this proposal");
         ProposalAggregate storage aggregate = proposals[proposalId];
         aggregate.totalYesVotes += yesVotes;

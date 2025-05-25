@@ -15,24 +15,23 @@ struct ProposalResult {
 }
 
 contract GovernanceResultProver is Prover {
-    function crossChainGovernanceResultOf(address governanceContract, uint256 proposalId, ProposalResult[] memory results)
-        public
-        returns (Proof memory, address, uint256, ProposalResult[] memory)
-    {
+    function crossChainGovernanceResultOf(
+        address governanceContract,
+        uint256 proposalId,
+        ProposalResult[] memory results
+    ) public returns (Proof memory, address, uint256, ProposalResult[] memory) {
         uint256 totalYesVotes = 0;
         uint256 totalNoVotes = 0;
         for (uint256 i = 0; i < results.length; i++) {
             setChain(results[i].chainId, results[i].blockNumber);
-            (uint256 startBlock, uint256 endBlock, uint256 yesVotes, uint256 noVotes) = IGovernance(results[i].addr).getProposal(results[i].proposalId);
+            (uint256 startBlock, uint256 endBlock, uint256 yesVotes, uint256 noVotes) =
+                IGovernance(results[i].addr).getProposal(results[i].proposalId);
             results[i].yesVotes = yesVotes;
             results[i].noVotes = noVotes;
-            
+
             totalYesVotes += yesVotes;
             totalNoVotes += noVotes;
-            require(
-                endBlock <= results[i].blockNumber,
-                "Voting is not ended yet"
-            );
+            require(endBlock <= results[i].blockNumber, "Voting is not ended yet");
         }
 
         return (proof(), governanceContract, proposalId, results);
