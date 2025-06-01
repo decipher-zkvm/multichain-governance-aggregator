@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
-import {GovernanceResultProver, ProposalResult} from "./GovernanceResultProver.sol";
+import {GovernanceResultProver} from "./GovernanceResultProver.sol";
 import {IGovernanceAggregator} from "./IGovernanceAggregator.sol";
 
 import {Proof} from "vlayer-0.1.0/Proof.sol";
@@ -9,27 +9,33 @@ import {Verifier} from "vlayer-0.1.0/Verifier.sol";
 
 contract GovernanceResultVerifier is Verifier {
     address public prover;
-    mapping(uint256 => bool) public aggregated;
+
+    struct ProposalAggregated {
+        address governanceContract;
+        uint256 totalYesVotes;
+        uint256 totalNoVotes;
+        bool aggregated;
+    }
+
+    mapping(uint256 => ProposalAggregated) public proposals;
 
     constructor(address _prover) {
         prover = _prover;
     }
 
-    function aggregate(Proof calldata, address governanceContract, uint256 proposalId, ProposalResult[] memory results)
+    function aggregate(Proof calldata, address governanceContract, uint256 proposalId, uint256 totalYesVotes, uint256 totalNoVotes)
         public
         onlyVerified(prover, GovernanceResultProver.crossChainGovernanceResultOf.selector)
     {
-        require(!aggregated[proposalId], "Already aggregated");
+        require(!proposals[proposalId].aggregated, "Already aggregated");
 
-        uint256 totalYesVotes = 0;
-        uint256 totalNoVotes = 0;
+        proposals[proposalId].governanceContract = governanceContract;
+        proposals[proposalId].totalYesVotes = totalYesVotes;
+        proposals[proposalId].totalNoVotes = totalNoVotes;
+        proposals[proposalId].aggregated = true;
+    }
 
-        for (uint256 i = 0; i < results.length; i++) {
-            totalYesVotes += results[i].yesVotes;
-            totalNoVotes += results[i].noVotes;
-        }
-        IGovernanceAggregator(governanceContract).addVotes(proposalId, totalYesVotes, totalNoVotes);
-
-        aggregated[proposalId] = true;
+    function getAggregate(uint256 proposalId) external view returns (uint256 totalYesVotes, uint256 totalNoVotes) {
+        return (proposals[proposalId].totalYesVotes, proposals[proposalId].totalNoVotes);
     }
 }
