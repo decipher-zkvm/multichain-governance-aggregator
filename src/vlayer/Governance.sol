@@ -52,12 +52,11 @@ contract Governance {
         emit CastVote(msg.sender, proposalId, support, weight);
     }
 
-    function getProposal(uint256 proposalId) external view returns (
-        uint256 startBlock,
-        uint256 endBlock,
-        uint256 yesVotes,
-        uint256 noVotes
-    ) {
+    function getProposal(uint256 proposalId)
+        external
+        view
+        returns (uint256 startBlock, uint256 endBlock, uint256 yesVotes, uint256 noVotes)
+    {
         Proposal storage proposal = proposals[proposalId];
         return (proposal.startBlock, proposal.endBlock, proposal.yesVotes, proposal.noVotes);
     }
