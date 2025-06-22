@@ -14,7 +14,7 @@ contract GovernanceResultProver is Prover {
         uint256 totalNoVotes = 0;
         for (uint256 i = 0; i < chainIds.length; i++) {
             setChain(chainIds[i], blockNum);
-            (uint256 startBlock, uint256 endBlock, uint256 yesVotes, uint256 noVotes) = IGovernance(governanceContract).getProposal(proposalId);
+            (, uint256 endBlock, uint256 yesVotes, uint256 noVotes) = IGovernance(governanceContract).getProposal(proposalId);
             require(
                 endBlock <= blockNum,
                 "Voting is not ended yet"
