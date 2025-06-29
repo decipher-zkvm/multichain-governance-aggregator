@@ -70,8 +70,8 @@ contract GovernanceResultProverTest is Test {
     
     address public governanceContract = address(0x123);
     uint256 public constant PROPOSAL_ID = 1;
-    uint256 public constant CHAIN_ID_1 = 1;
-    uint256 public constant CHAIN_ID_2 = 137;
+    uint256 public constant CHAIN_ID_1 = 1;    // Ethereum
+    uint256 public constant CHAIN_ID_2 = 8453; // Base
     uint256 public constant BLOCK_NUM = 2000;
 
     function setUp() public {

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(forge test:*)",
+      "Bash(forge script:*)",
+      "WebFetch(domain:book.vlayer.xyz)",
+      "Bash(chmod:*)"
+    ],
+    "deny": []
+  }
+}
