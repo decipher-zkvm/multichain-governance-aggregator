@@ -5,6 +5,7 @@ import {IERC20} from "openzeppelin-contracts/token/ERC20/ERC20.sol";
 
 contract Governance {
     IERC20 public governanceToken;
+    uint256 public proposalCount;
 
     struct Proposal {
         uint256 startBlock;
@@ -28,6 +29,8 @@ contract Governance {
         require(startBlock < endBlock, "Invalid block range");
         require(block.number <= startBlock, "Start block must be in future");
         require(block.number < endBlock, "End block must be in future");
+        require(proposalId == proposalCount, "Proposal ID must be sequential");
+        proposalCount++;
         Proposal storage proposal = proposals[proposalId];
         proposal.startBlock = startBlock;
         proposal.endBlock = endBlock;
